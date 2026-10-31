@@ -4,21 +4,25 @@ const Levels = (() => {
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const fill = (s, o) => s.replace(/\{(\w+)\}/g, (_, k) => o[k] ?? '');
 
-  function makeQuestion(type, cfg) {
+  function makeQuestion(type, cfg, prev) {
     const { min, max } = cfg.range;
     if (type === 'count') {
-      const n = rnd(min, max), opts = new Set([n]);
+      let n = rnd(min, max); while (prev && n === prev.answer) n = rnd(min, max);
+      const opts = new Set([n]);
       while (opts.size < 3) { const c = n + rnd(-3, 3); if (c >= min && c <= max) opts.add(c); }
       return { type, answer: n, options: shuffle([...opts]) };
     }
-    let a = rnd(min, max), b = rnd(min, max); while (b === a) b = rnd(min, max);
+    let a, b; do { a = rnd(min, max); b = rnd(min, max); } while (b === a || (prev && a === prev.left && b === prev.right));
     return { type, left: a, right: b, answer: a > b ? 'left' : 'right' };
   }
 
   // ui: {title, dots, prompt, body, msg}; 回傳 Promise 於完成時 resolve
-  function run(type, theme, cfg, ui, opts = {}) {
+  function run(type, themes, cfg, ui, opts = {}) {
+    themes = Array.isArray(themes) ? themes : [themes];
     const n = rnd(cfg.questionsPerLevel.min, cfg.questionsPerLevel.max);
-    const qs = Array.from({ length: n }, () => makeQuestion(type, cfg));
+    const tcfg0 = cfg[type], prompts = tcfg0.prompts || [tcfg0.prompt];
+    const tq = shuffle([...themes]), pq = shuffle([...prompts]);
+    const qs = []; for (let k = 0; k < n; k++) { const q = makeQuestion(type, cfg, qs[k - 1]); q.theme = tq[k % tq.length]; q.prompt = pq[k % pq.length]; qs.push(q); }
     const tcfg = cfg[type];
     ui.title.textContent = tcfg.title;
     const api = { questions: qs, index: 0 };
@@ -28,8 +32,8 @@ const Levels = (() => {
       function next() {
         dots(); api.index = i;
         if (i >= qs.length) { resolve(); return; }
-        const q = qs[i]; ui.msg.textContent = ''; ui.body.innerHTML = '';
-        const prompt = fill(tcfg.prompt, theme); ui.prompt.textContent = prompt; Sound.say(prompt);
+        const q = qs[i], theme = q.theme; ui.msg.textContent = ''; ui.body.innerHTML = '';
+        const prompt = fill(q.prompt, theme); ui.prompt.textContent = prompt; Sound.say(prompt);
         let locked = false;
         const answered = (correct, el, rightEl) => {
           if (locked) return;

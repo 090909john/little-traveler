@@ -120,10 +120,9 @@
   async function runLevel(leg, vKey) {
     state.phase = 'level';
     const type = D.levels.types[levelCounter++ % D.levels.types.length];
-    const pool = [D.vehicles.vehicles[vKey].theme, state.dest.theme, ...D.levels.extraThemes.slice(0, 1)];
-    const theme = pool[Math.floor(Math.random() * pool.length)];
+    const pool = [D.vehicles.vehicles[vKey].theme, state.dest.theme, ...D.levels.extraThemes].filter((t, i, a) => a.findIndex(x => x.word === t.word) === i);
     show('level');
-    const run = Levels.run(type, theme, D.levels, { title: $('level-title'), dots: $('level-dots'), prompt: $('level-prompt'), body: $('level-body'), msg: $('level-msg') }, { fast: FAST });
+    const run = Levels.run(type, pool, D.levels, { title: $('level-title'), dots: $('level-dots'), prompt: $('level-prompt'), body: $('level-body'), msg: $('level-msg') }, { fast: FAST });
     state.level = run.api;
     await run.done;
     state.level = null;
