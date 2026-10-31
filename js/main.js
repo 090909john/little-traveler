@@ -78,6 +78,7 @@
     state.leg = 0;
     const v = await chooseVehicle({ to: s.name, vehicles: okAll.length ? okAll : legs[0].vehicles });
     const veh = D.vehicles.vehicles[v];
+    preloadClip(veh);
     vehicleEl.textContent = veh.emoji; vehicleEl.setAttribute('visibility', 'visible'); svg.appendChild(vehicleEl);
     const p0 = full.getPointAtLength(0); vehicleEl.setAttribute('transform', `translate(${p0.x},${p0.y})`);
     for (let i = 0; i < STEPS; i++) {
@@ -86,11 +87,34 @@
       show('map');
       const m = `前進 ${i + 1}/${STEPS}！`; $('map-prompt').textContent = m; Sound.say(m);
       state.phase = 'driving'; Sound.play(veh.sound);
+      await playClip(v);
       await PathAnim.follow(full, vehicleEl, FAST ? 200 : 2500, i / STEPS, (i + 1) / STEPS, f => prog.style.strokeDashoffset = L * (1 - f));
       await wait(400);
     }
     vehicleEl.setAttribute('visibility', 'hidden');
     arrive(s); busy = false;
+  }
+
+  function preloadClip(veh) {
+    const vid = $('clip-video'); if (!vid || !veh.video) return;
+    if (vid.dataset.src !== veh.video) { vid.dataset.src = veh.video; vid.src = veh.video; if (veh.poster) vid.poster = veh.poster; }
+    vid.preload = 'auto'; if (!FAST) vid.load();
+  }
+
+  function playClip(vKey) {
+    const veh = D.vehicles.vehicles[vKey], ov = $('overlay-clip'), vid = $('clip-video');
+    if (!veh || !veh.video || !ov || !vid) return Promise.resolve();
+    if (FAST) return new Promise(r => setTimeout(r, 50));
+    preloadClip(veh);
+    return new Promise(resolve => {
+      let done = false;
+      const finish = () => { if (done) return; done = true; clearTimeout(t); vid.removeEventListener('ended', finish); vid.pause(); ov.classList.add('hidden'); resolve(); };
+      const t = setTimeout(finish, 2500);
+      vid.addEventListener('ended', finish);
+      vid.muted = true; vid.playsInline = true; vid.currentTime = 0;
+      ov.classList.remove('hidden');
+      const p = vid.play(); if (p && p.catch) p.catch(finish);
+    });
   }
 
   function chooseVehicle(leg) {

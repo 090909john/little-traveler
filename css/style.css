@@ -65,3 +65,7 @@ h1 small{font-size:.7em;color:#2b7bb9}
 @keyframes pulse{50%{transform:scale(1.06)}}
 @keyframes stampin{0%{transform:scale(3) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}
 .numbtn.sym{font-size:clamp(48px,9vw,96px);min-width:2.2em}
+
+#overlay-clip{position:fixed;inset:0;z-index:20;background:#000;display:flex;align-items:center;justify-content:center}
+#overlay-clip.hidden{display:none}
+#overlay-clip video{width:100%;height:100%;object-fit:cover}

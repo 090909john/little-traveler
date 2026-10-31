@@ -36,3 +36,8 @@ python3 -m http.server 8000
 - `js/fireworks.js` Canvas 煙火
 - `js/audio.js` 音效與語音
 - `js/storage.js` 護照存檔
+
+## Video credits (Pexels License — free for commercial use, no attribution required)
+- `assets/video/train.mp4` — "Scenic Train Journey through Countryside Fields" by Michal Petráš — https://www.pexels.com/video/scenic-train-journey-through-countryside-fields-34759849/
+- `assets/video/car.mp4` — "Car on Road" by Daniel Narinian — https://www.pexels.com/video/car-on-road-11775720/
+- `assets/video/ship.mp4` — "Ship Sailing on Sea" by Glenn Langhorst — https://www.pexels.com/video/ship-sailing-on-sea-11395713/
