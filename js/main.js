@@ -67,13 +67,27 @@
       if (l !== legs[legs.length - 1]) { el('circle', { class: 'waypoint', cx: end[0], cy: end[1], r: 9 }, routeLayer); el('text', { class: 'wp-label', x: end[0], y: end[1] - 14 }, routeLayer).textContent = l.to; }
       return p;
     });
+    // 整條路線合成一條，分 3 段：每過一關前進 1/3
+    const all = []; legs.forEach(l => l.path.forEach((pt, k) => { if (k || !all.length) all.push(pt); }));
+    const full = el('path', { class: 'route', d: PathAnim.smoothD(all.map(proj)), opacity: 0 }, routeLayer);
+    const prog = el('path', { class: 'route done', d: full.getAttribute('d') }, routeLayer);
+    const L = full.getTotalLength(); prog.style.strokeDasharray = `${L} ${L}`; prog.style.strokeDashoffset = L;
+    const STEPS = 3;
+    const okAll = D.vehicles.order.filter(k => legs.every(l => l.vehicles.includes(k)));
     await wait(1500);
-    for (let i = 0; i < legs.length; i++) {
+    state.leg = 0;
+    const v = await chooseVehicle({ to: s.name, vehicles: okAll.length ? okAll : legs[0].vehicles });
+    const veh = D.vehicles.vehicles[v];
+    vehicleEl.textContent = veh.emoji; vehicleEl.setAttribute('visibility', 'visible'); svg.appendChild(vehicleEl);
+    const p0 = full.getPointAtLength(0); vehicleEl.setAttribute('transform', `translate(${p0.x},${p0.y})`);
+    for (let i = 0; i < STEPS; i++) {
       state.leg = i;
-      const v = await chooseVehicle(legs[i]);
-      await drive(legPaths[i], v);
-      legPaths[i].classList.add('done');
-      if (i < legs.length - 1) { await runLevel(legs[i], v); show('map'); }
+      await runLevel(v, i, STEPS);
+      show('map');
+      const m = `前進 ${i + 1}/${STEPS}！`; $('map-prompt').textContent = m; Sound.say(m);
+      state.phase = 'driving'; Sound.play(veh.sound);
+      await PathAnim.follow(full, vehicleEl, FAST ? 200 : 2500, i / STEPS, (i + 1) / STEPS, f => prog.style.strokeDashoffset = L * (1 - f));
+      await wait(400);
     }
     vehicleEl.setAttribute('visibility', 'hidden');
     arrive(s); busy = false;
@@ -117,16 +131,17 @@
     await PathAnim.follow(pathEl, vehicleEl, FAST ? 200 : 3500);
   }
 
-  async function runLevel(leg, vKey) {
+  async function runLevel(vKey, idx, total) {
     state.phase = 'level';
     const type = D.levels.types[levelCounter++ % D.levels.types.length];
     const pool = [D.vehicles.vehicles[vKey].theme, state.dest.theme, ...D.levels.extraThemes].filter((t, i, a) => a.findIndex(x => x.word === t.word) === i);
     show('level');
     const run = Levels.run(type, pool, D.levels, { title: $('level-title'), dots: $('level-dots'), prompt: $('level-prompt'), body: $('level-body'), msg: $('level-msg') }, { fast: FAST });
     state.level = run.api;
+    $('level-title').textContent += `（第 ${idx + 1}/${total} 關）`;
     await run.done;
     state.level = null;
-    const m = '過關了！繼續出發！'; $('level-msg').textContent = m; Sound.say(m);
+    const m = idx + 1 < total ? '過關了！往前走一段！' : '全部過關！出發去目的地！'; $('level-msg').textContent = m; Sound.say(m);
     await wait(1200);
   }
 

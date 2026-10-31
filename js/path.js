@@ -10,14 +10,16 @@ const PathAnim = (() => {
     const l = pts[pts.length - 1]; return d + ` L${l[0]},${l[1]}`;
   }
   // el: SVG 元素（會設 transform）；回傳 Promise
-  function follow(pathEl, el, duration) {
+  function follow(pathEl, el, duration, from = 0, to = 1, onProgress) {
     const len = pathEl.getTotalLength();
     return new Promise(res => {
       const t0 = performance.now();
       function step(now) {
         const k = Math.min(1, (now - t0) / duration);
         const e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-        const p = pathEl.getPointAtLength(e * len), q = pathEl.getPointAtLength(Math.min(len, e * len + 1));
+        const at = (from + (to - from) * e) * len;
+        const p = pathEl.getPointAtLength(at), q = pathEl.getPointAtLength(Math.min(len, at + 1));
+        if (onProgress) onProgress(at / len);
         const flip = q.x < p.x - 0.01 ? -1 : 1;
         el.setAttribute('transform', `translate(${p.x},${p.y}) scale(${flip},1)`);
         if (k < 1) requestAnimationFrame(step); else res();
