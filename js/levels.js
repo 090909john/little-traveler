@@ -6,6 +6,12 @@ const Levels = (() => {
 
   function makeQuestion(type, cfg, prev) {
     const { min, max } = cfg.range;
+    if (cfg[type].symbols) {
+      const sy = cfg[type].symbols; let t = sy[rnd(0, sy.length - 1)];
+      while (prev && t === prev.answer) t = sy[rnd(0, sy.length - 1)];
+      const opts = new Set([t]); while (opts.size < 3) opts.add(sy[rnd(0, sy.length - 1)]);
+      return { type, answer: t, options: shuffle([...opts]) };
+    }
     if (type === 'count') {
       let n = rnd(min, max); while (prev && n === prev.answer) n = rnd(min, max);
       const opts = new Set([n]);
@@ -33,7 +39,7 @@ const Levels = (() => {
         dots(); api.index = i;
         if (i >= qs.length) { resolve(); return; }
         const q = qs[i], theme = q.theme; ui.msg.textContent = ''; ui.body.innerHTML = '';
-        const prompt = fill(q.prompt, theme); ui.prompt.textContent = prompt; Sound.say(prompt);
+        const prompt = fill(q.prompt, { ...theme, target: q.answer }); ui.prompt.textContent = prompt; Sound.say(prompt);
         let locked = false;
         const answered = (correct, el, rightEl) => {
           if (locked) return;
@@ -46,7 +52,13 @@ const Levels = (() => {
             rightEl.classList.add('glow'); ui.msg.textContent = cfg.hint; Sound.say(cfg.hint);
           }
         };
-        if (q.type === 'count') {
+        if (cfg[q.type].symbols) {
+          const row = document.createElement('div'); row.className = 'numrow';
+          const btns = q.options.map(v => { const b = document.createElement('button'); b.className = 'numbtn sym'; b.textContent = v; b.dataset.value = v; row.appendChild(b); return b; });
+          const rightEl = btns.find(b => b.dataset.value === q.answer);
+          btns.forEach(b => b.addEventListener('click', () => answered(b.dataset.value === q.answer, b, rightEl)));
+          ui.body.append(row);
+        } else if (q.type === 'count') {
           const objs = document.createElement('div'); objs.className = 'objects';
           objs.textContent = theme.emoji.repeat(q.answer);
           objs.innerHTML = Array(q.answer).fill(`<span>${theme.emoji}</span>`).join('');

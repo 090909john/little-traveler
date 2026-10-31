@@ -64,3 +64,4 @@ h1 small{font-size:.7em;color:#2b7bb9}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
 @keyframes pulse{50%{transform:scale(1.06)}}
 @keyframes stampin{0%{transform:scale(3) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}
+.numbtn.sym{font-size:clamp(48px,9vw,96px);min-width:2.2em}
