@@ -1,0 +1,66 @@
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;touch-action:manipulation;overscroll-behavior:none}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",sans-serif;background:linear-gradient(#bfe6ff,#e9f7ff);color:#2b3a55}
+#app{position:fixed;inset:0}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;padding:12px;touch-action:none}
+.screen.active{display:flex}
+#screen-start{justify-content:center;gap:20px;text-align:center}
+h1{font-size:clamp(36px,8vw,72px);margin:0;color:#e2574c;text-shadow:3px 3px 0 #fff}
+h1 small{font-size:.7em;color:#2b7bb9}
+.big-emoji{font-size:clamp(60px,15vw,140px)}
+.hint{font-size:22px;opacity:.7}
+.btn{font:inherit;font-size:28px;font-weight:bold;border:none;border-radius:28px;padding:18px 30px;background:#ffcf4a;color:#2b3a55;box-shadow:0 6px 0 #d69e16;cursor:pointer;min-width:120px;min-height:80px;touch-action:manipulation}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #d69e16}
+.btn.huge{font-size:56px;padding:28px 80px;border-radius:50px;background:#5ccf6b;box-shadow:0 8px 0 #379645;color:#fff}
+.btn.small{font-size:22px;min-height:60px;padding:10px 18px}
+.bar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.prompt{font-size:clamp(24px,4.5vw,40px);font-weight:bold;background:#fff;border-radius:20px;padding:8px 20px;box-shadow:0 3px 8px #0002}
+.prompt.big{font-size:clamp(28px,5vw,48px);margin:10px 0}
+.map-wrap{flex:1;width:100%;min-height:0;display:flex;justify-content:center}
+#map{height:100%;max-width:100%}
+.land{fill:#9fd98a;stroke:#5a9b4b;stroke-width:3;stroke-linejoin:round}
+.sea-label{font-size:16px;fill:#5a8fb5}
+.stop{cursor:pointer}
+.stop circle{fill:#fff;stroke:#e2574c;stroke-width:3}
+.stop .em{font-size:34px;text-anchor:middle;dominant-baseline:central}
+.stop .nm{font-size:17px;font-weight:bold;text-anchor:middle;fill:#2b3a55;paint-order:stroke;stroke:#fff;stroke-width:5px}
+.stop.done circle{stroke:#f2a900;fill:#fff7d6}
+.stop.home circle{stroke:#2b7bb9}
+.route{fill:none;stroke:#e2574c;stroke-width:5;stroke-dasharray:10 8;stroke-linecap:round;opacity:.8}
+.route.done{stroke-dasharray:none;stroke:#f2a900}
+.waypoint{fill:#fff;stroke:#e2574c;stroke-width:3}
+.wp-label{font-size:15px;font-weight:bold;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.vehicle{font-size:40px;text-anchor:middle;dominant-baseline:central}
+.overlay{position:absolute;inset:0;background:#0005;display:flex;align-items:center;justify-content:center;z-index:5;touch-action:none}
+.overlay.hidden{display:none}
+.panel{background:#fff8e6;border-radius:30px;padding:24px;text-align:center;max-width:94vw;box-shadow:0 10px 30px #0004}
+.choices{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.choice{font:inherit;border:6px solid #fff;border-radius:30px;background:#fff;width:clamp(130px,24vw,200px);height:clamp(150px,26vw,220px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:30px;font-weight:bold;box-shadow:0 6px 0 #0002;cursor:pointer;touch-action:manipulation;color:#2b3a55}
+.choice .e{font-size:clamp(60px,10vw,96px);line-height:1.1}
+.choice.no{opacity:.45;animation:shake .4s}
+.choice.glow,.numbtn.glow,.group.glow{border-color:#ffd400;box-shadow:0 0 0 6px #ffd400,0 0 30px 10px #ffe680;animation:pulse 1s infinite}
+.msg{min-height:44px;font-size:clamp(22px,4vw,34px);font-weight:bold;color:#e2574c;text-align:center}
+#level-body{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;min-height:0}
+.objects{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px;font-size:clamp(44px,8vw,72px);background:#fff;border-radius:24px;padding:14px}
+.numrow{display:flex;gap:24px}
+.numbtn{font:inherit;font-size:64px;font-weight:bold;width:clamp(100px,18vw,150px);height:clamp(100px,18vw,150px);border-radius:50%;border:6px solid #fff;background:#7ec8f0;color:#fff;box-shadow:0 6px 0 #4b97c2;cursor:pointer;touch-action:manipulation}
+.groups{display:flex;gap:24px;width:100%;justify-content:center}
+.group{font:inherit;flex:1;max-width:420px;min-height:260px;border:6px solid #fff;border-radius:30px;background:#fff;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:6px;font-size:clamp(36px,6vw,56px);padding:12px;cursor:pointer;box-shadow:0 6px 0 #0002;touch-action:manipulation}
+.wrong{animation:shake .4s}
+.right{background:#c9f5cf!important}
+.dots span{display:inline-block;width:22px;height:22px;border-radius:50%;background:#fff;margin:0 4px;border:3px solid #7ec8f0}
+.dots span.on{background:#5ccf6b;border-color:#5ccf6b}
+#screen-arrive{justify-content:center}
+#fireworks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.arrive-card{position:relative;background:#fffdf3e6;border-radius:30px;padding:24px;text-align:center;max-width:92vw}
+.stamp{margin:18px 0;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:180px;height:180px;border:8px double #e2574c;border-radius:50%;color:#e2574c;font-size:24px;font-weight:bold;transform:rotate(-12deg);animation:stampin .6s ease-out;background:#fff}
+.stamp .e{font-size:70px}
+.fact{font-size:clamp(22px,3.8vw,32px);max-width:640px;line-height:1.5}
+.row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:20px;width:100%;max-width:900px;padding:20px;overflow:auto}
+.stamps .stamp{animation:none;width:160px;height:160px;margin:auto}
+.stamps .stamp.empty{border-color:#bbb;color:#bbb;filter:grayscale(1);opacity:.5;transform:none}
+.stamps .cnt{font-size:18px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes pulse{50%{transform:scale(1.06)}}
+@keyframes stampin{0%{transform:scale(3) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(-12deg);opacity:1}}

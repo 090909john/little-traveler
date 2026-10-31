@@ -1,0 +1,10 @@
+{
+  "questionsPerLevel": { "min": 3, "max": 5 },
+  "range": { "min": 1, "max": 10 },
+  "types": ["count", "compare"],
+  "count":   { "title": "數數看", "prompt": "有幾個{word}呢？" },
+  "compare": { "title": "比多少", "prompt": "哪一邊的{word}比較多？" },
+  "praise": ["好棒！", "答對了！", "你好厲害！", "太棒了！"],
+  "hint": "沒關係，看看發亮的答案！",
+  "extraThemes": [ { "emoji": "🍎", "word": "蘋果" }, { "emoji": "⭐", "word": "星星" }, { "emoji": "🎈", "word": "氣球" } ]
+}

@@ -1,0 +1,8 @@
+{
+  "vehicles": {
+    "train": { "name": "火車", "emoji": "🚆", "sound": "train", "theme": { "emoji": "🚃", "word": "車廂" }, "cantSay": "這段路火車到不了喔，我們換{ok}吧！" },
+    "car":   { "name": "汽車", "emoji": "🚗", "sound": "car",   "theme": { "emoji": "🚗", "word": "汽車" }, "cantSay": "汽車開不到這裡喔，我們換{ok}吧！" },
+    "ship":  { "name": "船",   "emoji": "🚢", "sound": "ship",  "theme": { "emoji": "🐟", "word": "小魚" }, "cantSay": "船要在海上才能開喔，我們換{ok}吧！" }
+  },
+  "order": ["train","car","ship"]
+}

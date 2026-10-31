@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7ec8f0">
+<title>小小旅行家：環遊台灣</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <section id="screen-start" class="screen active">
+    <h1>小小旅行家<br><small>環遊台灣</small></h1>
+    <div class="big-emoji">🧳🗺️</div>
+    <button id="btn-start" class="btn huge">開始</button>
+    <p class="hint">點「開始」打開聲音</p>
+  </section>
+
+  <section id="screen-map" class="screen">
+    <header class="bar">
+      <div class="prompt" id="map-prompt">你想去哪裡玩？</div>
+      <button id="btn-passport" class="btn small">📘 護照</button>
+    </header>
+    <div class="map-wrap"><svg id="map" viewBox="0 0 400 745" preserveAspectRatio="xMidYMid meet" aria-label="台灣地圖"></svg></div>
+  </section>
+
+  <div id="overlay-vehicle" class="overlay hidden">
+    <div class="panel">
+      <div class="prompt" id="vehicle-prompt">要坐什麼去？</div>
+      <div class="choices" id="vehicle-choices"></div>
+      <div class="msg" id="vehicle-msg"></div>
+    </div>
+  </div>
+
+  <section id="screen-level" class="screen">
+    <header class="bar"><div class="prompt" id="level-title"></div><div class="dots" id="level-dots"></div></header>
+    <div class="prompt big" id="level-prompt"></div>
+    <div id="level-body"></div>
+    <div class="msg" id="level-msg"></div>
+  </section>
+
+  <section id="screen-arrive" class="screen">
+    <canvas id="fireworks"></canvas>
+    <div class="arrive-card">
+      <div class="prompt big" id="arrive-title"></div>
+      <div class="stamp" id="arrive-stamp"></div>
+      <p class="fact" id="arrive-fact"></p>
+      <div class="row">
+        <button id="btn-again" class="btn">🗺️ 再去玩</button>
+        <button id="btn-passport2" class="btn">📘 看護照</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-passport" class="screen">
+    <header class="bar"><div class="prompt">我的旅行護照</div><button id="btn-back" class="btn small">🗺️ 地圖</button></header>
+    <div class="stamps" id="stamps"></div>
+  </section>
+</div>
+<script src="js/audio.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/path.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/fireworks.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
