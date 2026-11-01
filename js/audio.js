@@ -31,7 +31,7 @@ const Sound = (() => {
   function pickVoice() {
     if (!('speechSynthesis' in window)) return;
     const vs = speechSynthesis.getVoices();
-    voice = vs.find(v => /zh[-_]TW/i.test(v.lang)) || vs.find(v => /^zh/i.test(v.lang)) || null;
+    voice = (vs.find(x=>/zh[-_]TW/i.test(x.lang)&&!/yue|canton|hong ?kong/i.test(x.name))||vs.find(x=>/cmn|zh[-_](CN|Hans|Hant-TW)|mandarin|普通話|國語/i.test(x.lang+' '+x.name)&&!/HK|yue|canton/i.test(x.lang+' '+x.name))||null);
   }
   if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
   function say(text) {
@@ -39,7 +39,7 @@ const Sound = (() => {
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'zh-TW'; u.rate = 0.9; u.pitch = 1.15; if (voice) u.voice = voice;
+      u.lang = 'zh-TW'; u.rate = 0.9; u.pitch = 1.15; if (!voice) pickVoice(); if (voice) u.voice = voice;
       speechSynthesis.speak(u);
     } catch (e) {}
   }
